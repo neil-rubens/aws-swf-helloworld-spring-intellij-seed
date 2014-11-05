@@ -1,15 +1,14 @@
 package com.amazonaws.services.simpleworkflow.flow.examples.helloworld;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.PropertiesCredentials;
+
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
 import com.amazonaws.services.simpleworkflow.AmazonSimpleWorkflow;
 import com.amazonaws.services.simpleworkflow.AmazonSimpleWorkflowClient;
 import com.amazonaws.services.simpleworkflow.flow.ActivityWorker;
 import com.amazonaws.services.simpleworkflow.flow.WorkflowWorker;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.io.File;
 
 /**
  * @author Neil Rubens
@@ -32,16 +31,18 @@ public class AppConfig {
     }
 
     @Bean
-    public AWSCredentials getCredentials() throws Exception {
-        //return new PropertiesCredentials(getClass().getResourceAsStream("aws.properties")); // may need to be in the "/aws.properties"
-        //return new PropertiesCredentials(getClass().getResourceAsStream(System.getenv("AWS_PROPERTIES")));
-        return new PropertiesCredentials( new File("aws.properties"));
+    public AWSCredentialsProvider getCredentials() throws Exception {
+//        return new InstanceProfileCredentialsProvider();
+//        return new EnvironmentVariableCredentialsProvider();
+        return new ClasspathPropertiesFileCredentialsProvider("aws.properties");
+
+
     }
 
     @Bean
     public AmazonSimpleWorkflow getSimpleWorkflowClient(
-            AWSCredentials awsCredentials) {
-        return new AmazonSimpleWorkflowClient(awsCredentials);
+            AWSCredentialsProvider awsCredentialsProvider) {
+        return new AmazonSimpleWorkflowClient(awsCredentialsProvider);
     }
 
     @Bean
